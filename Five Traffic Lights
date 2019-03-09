@@ -1,0 +1,58 @@
+"""
+Created on Sat Mar  2 13:15:43 2019
+
+@author: one of my classmates:Yanpeng Shi
+"""
+
+list1=[['AB','AC','AD','BA','BC','BD','DA','DB','DC','EA','EB','EC','ED'],
+       [1,0,0,0,1,1,1,0,0,1,0,0,0],
+       [0,1,0,0,0,1,1,1,0,1,1,0,0],
+       [0,0,1,0,0,0,0,0,0,1,1,1,0],
+       [0,0,0,1,0,0,0,0,0,0,0,0,0],
+       [1,0,0,0,1,0,0,1,0,0,1,0,0],
+       [1,1,0,0,0,1,1,0,0,0,1,1,0],
+       [1,1,0,0,0,1,1,0,0,0,1,1,0],
+       [0,1,0,0,1,0,0,1,0,0,0,1,0],
+       [0,0,0,0,0,0,0,0,1,0,0,0,0],
+       [1,1,1,0,0,0,0,0,0,1,0,0,0],
+       [0,1,1,0,1,1,1,0,0,0,1,0,0],
+       [0,0,1,0,0,1,1,1,0,0,0,1,0],
+       [0,0,0,0,0,0,0,0,0,0,0,0,1]]
+def get(x):
+    group1=set()
+    for i in x[0]:
+        group1.add(i)
+    return group1
+
+def compare(a,b,x):
+    adress1=x[0].index(a)
+    number2=0
+    for i in list(b):
+        adress2=x[0].index(i)
+        number1=x[adress1+1][adress2]
+        number2+=number1
+#        print(adress1,adress2,number1,number2,i)
+    if number2==0:
+        return 1
+#    print(b)
+def coloring(G):
+    color=1
+    groups=set()
+    verts=get(G)
+    while verts:
+        new_group=set()
+#        print(verts)
+        for v in list(verts):
+            if compare(v,new_group,G):
+                new_group.add(v)
+                verts.remove(v)
+        print(new_group)
+
+        groups.add((color,tuple(new_group)))
+        color+=1
+    return groups
+def main():
+    G=list1
+    print(coloring(G))
+main()
+    
