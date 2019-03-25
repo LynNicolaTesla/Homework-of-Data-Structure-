@@ -1,0 +1,134 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Mar 25 09:12:06 2019
+@Lesson:03-Thursday <<单链表>>
+@author: Shi Yanpeng
+"""
+
+class Node:
+    def __init__(self,data,next_=None):
+        self.data=data
+        self.next=next_
+    def SetNode(self,data):
+        self.data=data
+    def __st__(self):
+        return self.data
+
+class LinkList:
+    def __init__(self,capacity,length=0):
+        if not(isinstance(capacity,int)):
+            raise ValueError
+        self.capacity=capacity
+        self._length=length
+        self.firstDataNode=None
+    def isEmpty(self):
+        return self._length==0
+    def setAtHead(self,data):
+        p=Node(data)
+        p.next=self.firstDataNode
+        self.firstDataNode=p
+        self._length+=1
+    def append(self,data):
+        if self._length==0:
+            self.firstDataNode=Node(data)
+            self._length+=1
+        else:
+            i=1
+            p=self.firstDataNode
+            while i<self._length:
+                i+=1
+                p=p.next
+            p.next=Node(data)
+            self._length+=1
+    def setDataindex(self,data,index):
+        if index==0:
+            p=Node(data)
+            p.next=self.firstDataNode
+            self.firstDataNode=p
+            self._length+=1
+        else:
+            p=self.firstDataNode
+            pr=Node(data)
+            for i in range(index-1):
+                p=p.next
+            pr.next=p.next
+            p.next=pr
+            self._length+=1
+    def showme(self):
+        print('Data is:',end=' ')
+        p=self.firstDataNode
+        while p:
+            print(p.data,end=' ')
+            p=p.next
+        print()
+    def deleteAll(self):
+        self.firstDataNode=None
+        self._length=0
+    def deleteAtHead(self):
+        if self._length>=1:
+            self.firstDataNode=self.firstDataNode.next
+            self._length-=1
+        else:
+            self.firstDataNode=None
+            self._length-=1
+    def deleteIndex(self,index):
+        if index>self._length:
+            raise TypeError('index otu of list')
+        if index==0:
+            self.deleteAtHead()
+        else:
+            p=self.firstDataNode
+            while index-1:
+                p=p.next
+                index-=1
+            p.next=p.next.next
+            self._length-=1
+    def deleteData(self,data):
+        p=self.firstDataNode
+        if p.data==data:
+            self.deleteAtHead()
+        else:
+            p=self.firstDataNode
+            a=self._length
+            for i in range(self._length-1):
+                if p.next.data==data:
+                    p.next=p.next.next
+                    self._length-=1
+                    break
+                p=p.next
+            if a==self._length:
+                print('do not find data')
+    def index(self,x):
+        p=self.firstDataNode
+        for i in range(0,self._length):
+            if x==p.data:
+                return print(i)
+            p=p.next
+        return print(-1)
+    def getdata(self,index):
+        p=self.firstDataNode
+        while index:
+            p=p.next
+            index-=1
+        return print(p.data)
+    def length(self):
+        return print(self._length)
+
+   
+if __name__=='__main__':
+    a=LinkList(40)
+    b='abcdefghigklmnopqrstuvwxyz'
+    for i in b:
+        a.append(i)
+    a.setAtHead(111)
+    a.deleteAtHead()
+    a.deleteIndex(3)
+    a.getdata(5)
+    a.index('h')
+#    a.deleteData('b')
+    a.setDataindex(3,2)
+#    a.length()
+#    a.showme()
+#    a.deleteAll()
+##    a.showme()
+    a.showme()
