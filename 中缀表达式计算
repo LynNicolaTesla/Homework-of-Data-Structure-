@@ -1,0 +1,93 @@
+class StackUnderflow(ValueError):
+    pass
+class SStack:
+    def __init__(self):
+        self._elems=[]
+    
+    def is_empty(self):
+        return self._elems==[]
+    
+    def top(self):
+        if self._elems==[]:
+            raise StackUnderflow('in SStack.top()')
+        return self._elems[-1]
+    
+    def push(self,elem):
+        self._elems.append(elem)
+    
+    def pop(self):
+            
+        if self._elems==[]:
+            raise StackUnderflow('in SStack.top()')
+        return self._elems.pop()
+
+import re 
+t=re.compile(r'\d*\.*\d+|[^0-9.]') #将算式字符串分解成一个列表，数字与运算符分开（正则表达式）
+dic={'(':0,'+':1,'-':1,'*':2,'/':2,')':0,'=':0}
+op='(=+-*/)'
+def main(line):
+    lin=t.findall(line)#lin按顺序储存数值与运算符
+    #创建一个数据栈和运算符栈
+    snum=SStack()
+    soper=SStack()
+    snum.push(0)
+    for x in range(len(lin)):
+        i=lin[x]
+        if i not in op:  #判断i是否为运算符，若不是则进入数据栈，若是运算符就进行如下判断：
+            snum.push(i)
+            continue
+        elif i=='(':  #如果i=‘（‘——将i压入栈
+            soper.push(i)
+            continue
+        elif i=='-' and lin[x-1]=='(':
+            snum.push(0)
+            soper.push(i)
+            continue
+        else:
+            num=1
+            while not soper.is_empty():  #运算栈为空则不运算，直接将i压入栈
+                if i==')' and soper.top()=='(': #若i=）且运算符栈顶为）——将‘（‘弹出栈 i不压入栈
+                    soper.pop()
+                    num=0
+                    break
+                if dic[i]>dic[soper.top()]: #i的优先级高于栈顶的运算符——将压入栈
+                    break
+                else:  #将栈顶的运算符算掉
+                    a=float(snum.pop())
+                    b=float(snum.pop())  #取出数据栈的两个数字，进行运算
+                    c=soper.pop()       #取出运算符  按照下面的运算符进行计算
+                    if c=='+':
+                        d=b+a
+                    if c=='-':
+                        d=b-a
+                    if c=='*':
+                        d=b*a
+                    if c=='/':
+                        d=b/a
+                    snum.push(d)   #将结果压入数据栈
+            if num:      #当不是因为i=）且运算符栈顶为）而退出循环的就将运算符压入栈
+                soper.push(i)
+    if   not soper.is_empty() and soper.top()!='=':   #处理表达式不以等号结尾
+        while  not soper.is_empty():
+            a=float(snum.pop())
+            b=float(snum.pop())
+            c=soper.pop()
+            if c=='+':
+                d=b+a
+            if c=='-':
+                d=b-a
+            if c=='*':
+                d=b*a
+            if c=='/':
+                d=b/a
+            snum.push(d)
+    return snum.pop()  #输出数据栈中仅剩的数值即结果
+
+if __name__=='__main__':
+    print(main('1+2*3+4*5'))
+    print(main('(1+2)*3+4*5='))
+    print(main('1+2*3.5+4*3='))
+    print(main('(((1+8)*(23+1))+33)'))
+    print(main('((1+8)*(23+1))+33='))
+    print(main('-1+1'))
+    print(main('3*(-1)+6'))
