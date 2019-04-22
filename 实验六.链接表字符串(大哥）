@@ -1,0 +1,158 @@
+class Node:
+    def __init__(self,data,_next=None):
+        self.data=data
+        self.next=_next
+    def __str__(self):  #可以使用print函数
+        return self.data
+class linklist:
+    def __init__(self,string=None):
+        self._first=None
+        self._tail=None
+        self._length=0
+        if string!=None:
+            b=Node(string[0])
+            self._first=b
+            self._tail=b
+            self._length=len(string)
+            for i in string[1:]:
+                a=Node(i)
+                self._tail.next=a
+                self._tail=a
+    def push(self,x):   #在字符串的开头加入一个节点
+        if self._length==0:
+            self._first=Node(x)
+            self._tail=Node(x)
+        else:
+            a=Node(x)
+            self._tail.next=a
+            self._tail=a
+        self._length+=1
+    def linktail(self,node):  #在字符串的末尾加入一个节点
+        if node==None:
+            return
+        self._tail.next=node
+        self._tail=node
+        self._length+=1
+    def length(self):   #返回字符串长度
+        return self._length
+    
+    def top(self):   #返回第一个节点
+        return self._first
+    def tail(self):  #返回最后一个节点
+        return self._tail
+    
+    def match(self,another):  #在self中找到another，并返回another第一个字符的位置
+        m,n=self._length,another.length()
+        i,j=0,0
+        a,b=self._first,another.top()
+        p=self._first
+        k=0
+        while k<m-n+1 and j<n:
+            p=p.next
+            while j<n and a.data==b.data:
+                
+                i,j=i+1,j+1
+                a=a.next
+                b=b.next
+            if j==n:
+                return k
+            else:
+                j,b=0,another.top()
+                a=p
+                i=k
+            k+=1
+            a=p
+        if j==0:
+            return -1
+    def index(self,x):  #返回第x个节点
+        if self._length<x:
+            return print('out of index')
+        a=self._first
+        for i in range(x):
+            a=a.next
+        return a
+    def replace(self,new,old):
+        new,old=linklist(new),linklist(old)
+        num1=self.match(old)
+        if old.length()==self._length and num1==0:
+            self._first,self._tail=new.top(),new.tail()
+            self._length=new.length()
+            return
+        elif num1==0 and old.length()<self._length:
+            self._first=self.index(old.length())
+            new.linktail(self._first)
+            self._first=new.top()
+            self._length=self._length-old.length()+new.length()
+            return
+        elif num1+old.length()==self._length:
+            a=self.index(num1-1)
+            a.next=new.top()
+            self._length=num1+new.length()
+            return
+        a=self.index(num1-1)
+        b=self.index(num1+old.length()-1)
+        a.next=b.next
+        new.linktail(a.next)
+        a.next=new.top()
+        self._length=self._length-old.length()+new.length()
+        return
+    def find_in(self,another):
+        i=0
+        a=self._first
+        while not a==None:
+            b=another.top()
+            while not b==None:
+                if a.data==b.data:
+                    return i
+                b=b.next
+            a=a.next
+            i+=1
+        return None
+    def find_not_in(self,another):
+        i=0
+        a=self._first
+        c=another.length()
+        while not a==None:
+            b=another.top()
+            k=0
+            while not b==None:
+                if a.data!=b.data:
+                    k+=1
+                    b=b.next
+                    continue
+                b=b.next
+            if k==c:
+                return i
+            a=a.next
+            i+=1
+        return None
+    def remove(self,another):
+        num1=self.match(another)
+        if num1==-1:
+            return print('str is not find')
+        if num1==0:
+            c=self.index(another.length()-1)
+            self._first=c.next
+            self._length-=another.length()
+            return
+        a=self.index(num1+another.length()-1)
+        b=self.index(num1-1)
+        b.next=a.next
+        self._length-=another.length()
+        return
+
+if __name__=='__main__':
+    a=linklist('abcdef')
+    b=linklist('123456')
+    c=linklist('+-*/')
+    d=linklist('+-')
+    e=linklist('abcdh')
+    f=linklist('noinooncnni')
+    print(a.length())
+    b.replace('gg','1')
+    print(b.top())
+    c.remove(d)
+    print(c.top())
+    print(a.find_not_in(e))
+    print(a.find_in(f))
+    f=linklist()
