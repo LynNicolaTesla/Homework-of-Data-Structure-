@@ -1,0 +1,53 @@
+#def showtree(L):
+#    n=len(L)
+#    import math
+#    for i in range(1,1+int(math.log(n,2))+1):
+#        for j in range(int(2**(i-1)),int(2**(i))):
+#            if j-1<n:
+#                print("%5d\t"%L[j-1],end='  ')
+#        print()
+#    print("---------------------------------")
+def heapSort(L):
+    #create heap
+    n=len(L)
+    lastindex=(n-2)//2
+    for i in range(lastindex,-1,-1):
+        pi=i 
+        while pi<=lastindex:
+            LI=2*pi+1
+            RI=2*pi+2
+            if RI>n-1:
+                TI=LI
+            else:
+                if L[RI]>L[LI]:
+                    TI=RI
+                else:
+                    TI=LI
+            if L[TI]>L[pi]:
+                L[TI],L[pi]=L[pi],L[TI]
+                pi=TI
+            else:
+                break
+ #   showtree(L)
+    return L  
+def output(L):
+    p=heapSort(L)
+    print(p)
+    a=[]        #create a new list called a
+    while len(L)!=0:
+        a.append(p[0])
+        p[0]=p[-1]
+        p.pop()
+        heapSort(p)
+    print(a)
+#    output=[]
+#    for i in range(0,len(L)-1):
+#        output.append(L[i])
+#        L.pop(L(i))
+#        heapSort(L)
+#        
+#def heapsort_output():
+ 
+#k=heapSort([3,4,61,2,1,9,56,23,12,433])
+k=heapSort([7,3,2,5,9,8,4,6])
+output([7,3,2,5,9,8,4,6])
