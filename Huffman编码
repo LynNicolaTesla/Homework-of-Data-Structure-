@@ -1,0 +1,81 @@
+class node:    #节点
+    def __init__(self,weight,char=" ",left=-1,right=-1):
+        self.left=left
+        self.right=right
+        self.weight=weight
+        self.char=char
+        self.parent=None
+def rank(t):      #排序    从大到小
+    n=len(t)
+    for j in range(n,0,-1):
+        minloc=0
+        for i in range(j):
+            if t[i].weight<t[minloc].weight:
+                minloc=i
+        if not minloc==j-1:
+            t[minloc],t[j-1]=t[j-1],t[minloc]
+            
+def createHuffman(leafchar,leafweight):
+    #init,create List
+    if not len(leafchar)==len(leafweight):    #防止输入错误
+        return print('符号与权重未能一一对应')
+
+    global lis0     #可以在外部查看数（函数返回值为编码)
+    lis0=[]        #两个列表都是储存的元素是字符的权重对应
+    lis=[]
+    for i in range(len(leafchar)):    #将字符与权重对应
+        no=node(leafweight[i],leafchar[i])
+        lis0.append(no)
+    lis=lis0.copy()
+    rank(lis0)     #将无序的lis0的列表按照权重排序，从大到小
+    for j in range(len(lis0)-1):         
+        #生成哈夫曼树，总共进行len(lis0)-1次
+        a=lis0.pop()                 #lis0的最后一个，权重最小的
+        b=lis0.pop()                  #lis的倒数第二个，权重第二小的
+        c=node(a.weight+b.weight,' ',a,b)           #将这两了节点合成一个，a作为左孩子，b为右孩子
+        a.parent=c                     #给a，b确认父亲
+        b.parent=c             
+        lis0.append(c)                   #将c加入lis0，可能会破坏从大到小的顺序
+        if len(lis0)<=1:      
+            #下面的是将c进入之后的lis0继排序，如果里面只有一个元素就不用排序了   
+            continue
+        if c.weight<lis0[-2].weight:            #如果lis0的最后一个比倒数第二个小，说明顺序正确
+            continue
+        if c.weight>=lis0[0].weight:           
+            #如果lis0的最后一个（c）比第一个还要大，就把最后一个放在第一位，其余后移一位
+            lis0[1:]=lis0[0:-1]          #后移一位
+            lis0[0]=c
+            continue
+        for k in range(len(lis0)-2,0,-1):          #前面的情况说明c应该放在间都不是
+
+            if (lis0[k-1].weight>c.weight) and (lis0[k].weight<=c.weight):   
+                #从最后开始找，找到lis0的最后一个应该放在哪（就是前面的比次c大，后面的比c小，然后把c移过去
+                lis0[k+1:]=lis0[k:-1]               
+                lis0[k]=c
+                break
+    dic={}                 #下面是根据树生成编码
+    for n in lis:     #首先从lis里面找一个符号，然后写出这个符号的编码
+        old=n.parent   #new相当于孩子，old是父亲
+        new=n
+#        print(list)
+        string=''
+
+        while new is not lis0[0] :   #写编码的结束条件是回溯到了舒耿
+
+            if old.left is new:     #如果孩子在父亲的左边，就在编码的左边加一个0
+                string='0'+string
+            if old.right is new:    #如果孩子在父亲右边，就在编码的左边加一个1
+                string='1'+string
+            new=old              #让现在的父亲做下一次循环的孩子
+            old=old.parent            #现在的爷爷做下一次循环的父亲
+        dic[n.char]=string 
+    result=[]
+    for name in leafchar:
+        code=dic[name]
+        result.append([name,code])
+    return result
+
+leafchar=['a','b','c','d','e','f','g','h','0']
+leafweight=[0.5,1,2,3.5,4,5,6.8,7.2,10]
+dic=createHuffman(leafchar,leafweight)
+print(dic)
